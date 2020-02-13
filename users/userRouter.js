@@ -16,7 +16,7 @@ router.post('/', validateUser, (req, res) => {
     });
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts', validatePost, (req, res) => {
   const postInfo = { ...req.body, user_id: req.params.id };
   Posts.insert(postInfo)
     .then(post => {
@@ -84,21 +84,36 @@ router.put('/:id', validateUserId, (req, res) => {
   .catch(error => {
       res.status(500).json({errorMessage: "The user information could not be modified."})
   });
- 
 });
 
 //custom middleware
 
 function validateUserId(req, res, next) {
-  // do your magic!
+  const postContent = req.body;
+
+  if(!req.params.id){
+      res.status(404).json({ errorMessage: "The specified ID does not exist." })
+  } else {
+      req.user = req.body
+  } 
+  next();
 }
 
 function validateUser(req, res, next) {
-  // do your magic!
+  if(!req.body || !req.body.name ){
+    res.status(400).json({ message: "please provide body & name content" });
+ } else{
+   next();
+ }
 }
 
 function validatePost(req, res, next) {
-  // do your magic!
+ 
+  if(!req.body || !req.body.text){
+    res.status(400).json({ errorMessage: "Please provide text for the post."})
+  } else { 
+    next();
+  }
 }
 
 module.exports = router;
