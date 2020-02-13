@@ -7,5 +7,5 @@ const userRouter = require("./users/userRouter.js");
 const port = 5000;
 
 server.use("/api/users", userRouter);
-
+const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`\n** Server on port ${port} \n`));
